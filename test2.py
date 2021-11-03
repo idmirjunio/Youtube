@@ -10,19 +10,16 @@ win32clipboard.CloseClipboard()
 
     
 
-link = ("https://youtu.be/Gyroith0-Rc?list=RDGyroith0-Rc")
-t = link.find("youtu.be")
+link = ("https://www.youtube.com/watch?v=2R7Fyqeas4s")
 
-if t != -1:
-      print ("ok") 
-#yt = YouTube(link, on_progress_callback = on_progress)
+yt = YouTube(link, on_progress_callback = on_progress)
 
-
-#x=yt.streams.filter(type="audio",adaptive=True)
+x= yt.streams
+x=yt.streams.filter(res="720p",adaptive=True)
 
 
-#print(x)
-#print(len(x))
+print(x)
+print(type(x))
 
 #x= yt.streams.get_by_itag(251)
 

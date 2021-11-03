@@ -6,26 +6,23 @@ from pytube import YouTube, streams
 from pytube.cli  import on_progress
 import win32clipboard
 
-win32clipboard.OpenClipboard()
+win32clipboard.OpenClipboard()                 #copiar link do bloco de nota
 link = win32clipboard.GetClipboardData()
-print(link)
+#print(link)
 win32clipboard.CloseClipboard()
 
 
-t = link.find("youtu.be")
-l = link.find("youtube")
-print(l)
-if t == -1:
-    
+tipo1 = link.find("youtu.be")
+tipo2 = link.find("youtube")
 
- if l == -1:
-    exit()     
+if tipo1 == -1 or tipo2 == -1:
+       
+ exit()     
 #link = ("https://youtu.be/Gyroith0-Rc?list=RDGyroith0-Rc")
 #link = ("https://youtu.be/jfLHgN_1dLU")
 yt = YouTube(link,on_progress_callback = on_progress)
 
 
-x = yt.streams.filter(progressive=True)
 
 def melhor_kbps(resolucao,formato,adaptive,progressive,tipo):
  yt = YouTube(link, on_progress_callback = on_progress)
@@ -344,7 +341,7 @@ def audio_adaptive():      #\MODIFICADO1111111111111111111111111
    itag = pegar_itag(adaptive= False,tipo="audio",resolucao= 0,formato="",abr=kbps,progressive=False)
    x = yt.streams.get_by_itag(itag)                              #\modificado!!!!!!!!!!!!!!!!
    x.download()
-   atributos.enviar_para_cruzamento(link=link,tipo="audio")
+   atributos.enviar_para_cruzamento(link=link,tipo="audio",formato=".mp4")
  else:      
   if len(x) > 2 : audio_adaptive_Formato_mp4(kbps=kbps)#melhor audio 
                                         
@@ -373,7 +370,7 @@ def adaptive_True_Type_video_file_webm_res_max(p):
    codec = verificar_codec(progressive=False,formato="webm",adaptive=True,resolucao=p,tipo="video")
    x = yt.streams.get_by_itag(codec)
    x.download()
-   atributos.enviar_para_cruzamento(link=link,tipo="video")
+   atributos.enviar_para_cruzamento(link=link,tipo="video",formato=".webm")
    adaptive_true_Type_audio()
        #verificar codec
 
@@ -385,7 +382,7 @@ def adaptive_True_Type_video_file_mp4_res_max(p):
    itag = pegar_itag(adaptive= True,tipo="video",resolucao=p,formato="mp4",abr="")
    x = yt.streams.get_by_itag(itag)
    x.download()
-   atributos.enviar_para_cruzamento(link=link,tipo="video")
+   atributos.enviar_para_cruzamento(link=link,tipo="video",formato=".mp4")
    adaptive_true_Type_audio()
  else:  
   if len(x) == 0: adaptive_True_Type_video_file_webm_res_max(p=p) #funcao (type="video",adaptive=True,file_extension='webm')#+maior resolução)
@@ -394,7 +391,7 @@ def adaptive_True_Type_video_file_mp4_res_max(p):
     codec = verificar_codec(progressive=False,formato="mp4",adaptive=True,resolucao=p,tipo="video")
     x = yt.streams.get_by_itag(codec)
     x.download()
-    atributos.enviar_para_cruzamento(link=link,tipo="video")
+    atributos.enviar_para_cruzamento(link=link,tipo="video",formato=".mp4")
     adaptive_true_Type_audio()
 
 #funcao
@@ -437,7 +434,7 @@ def progressive_True_file_mp4_Res_maior_q_720(p):
  x=yt.streams.filter(progressive=True,file_extension='mp4',res=p)#resolucao<720p
  if len(x) == 1 :
        x.download()#avisar
-       atributos.enviar_para_cruzamento(link=link)
+       atributos.enviar_para_cruzamento(link=link,tipo="video", formato=".mp4")
  # se len(x) > 2 entao funçao verificar valor vcodec
  else:
   if len(x) == 0 : progressive_True_file_webm_maior_q_720(p=p) #funçao (progressive=True,file_extension='webm',res="1080p")
@@ -455,24 +452,15 @@ def progressive_true_Res_maior_q_720():
    if len(x) > 2 :progressive_True_file_mp4_Res_maior_q_720(p=p)#(progressive=True,file_extension='mp4')#resolucao<720p 
 
 x = yt.streams.filter(progressive=True)
-#se len(x) > 0 entao funcao (progressive=True)#+maior resoluçao
+
 if len(x) > 0: 
+  
   progressive_true_Res_maior_q_720()
+  
+x = yt.streams.filter(adaptive=True)
 
-#caso nao entao (registra q n há video progressive)
-# else:
-#pass
-#list = (yt.streams)
-
-################################
-#x = str(list[1])
-
-
-
-#y = x.rsplit(" ")
-
-#print(y)
-
- 
-#stream = '[<Stream: itag="17" mime_type="video/3gpp" res="144p" fps="8fps" vcodec="mp4v.20.3" acodec="mp4a.40.2" progressive="True" type="video">,eam: itag="18" mime_type="video/mp4" res="360p" fps="30fps" vcodec="avc1.42001E" acodec="mp4a.40.2" progressive="True" type="video">, <S: itag="22" mime_type="video/mp4" res="720p" fps="30fps" vcodec="avc1.64001F" acodec="mp4a.40.2" progressive="True" type="video">, <Stretag="137" mime_type="video/mp4" res="1080p" fps="30fps" vcodec="avc1.640028" progressive="False" type="video">, <Stream: itag="248" mime="video/webm" res="1080p" fps="30fps" vcodec="vp9" progressive="False" type="video">, <Stream: itag="399" mime_type="video/mp4" res="108ps="30fps" vcodec="av01.0.08M.08" progressive="False" type="video">, <Stream: itag="136" mime_type="video/mp4" res="720p" fps="30fps" vc"avc1.4d401f" progressive="False" type="video">, <Stream: itag="247" mime_type="video/webm" res="720p" fps="30fps" vcodec="vp9" progressFalse" type="video">, <Stream: itag="398" mime_type="video/mp4" res="720p" fps="30fps" vcodec="av01.0.05M.08" progressive="False" type="">, <Stream: itag="135" mime_type="video/mp4" res="480p" fps="30fps" vcodec="avc1.4d401f" progressive="False" type="video">, <Stream: it44" mime_type="video/webm" res="480p" fps="30fps" vcodec="vp9" progressive="False" type="video">, <Stream: itag="397" mime_type="video/mes="480p" fps="30fps" vcodec="av01.0.04M.08" progressive="False" type="video">, <Stream: itag="134" mime_type="video/mp4" res="360p" fpsps" vcodec="avc1.4d401e" progressive="False" type="video">, <Stream: itag="243" mime_type="video/webm" res="360p" fps="30fps" vcodec="vp9" progressive="False" type="video">, <Stream: itag="396" mime_type="video/mp4" res="360p" fps="30fps" vcodec="av01.0.01M.08" progressive="False" type="video">, <Stream: itag="133" mime_type="video/mp4" res="240p" fps="30fps" vcodec="avc1.4d4015" progressive="False" type="video">, <Stream: itag="242" mime_type="video/webm" res="240p" fps="30fps" vcodec="vp9" progressive="False" type="video">, <Stream: itag="395" mime_type="video/mp4" res="240p" fps="30fps" vcodec="av01.0.00M.08" progressive="False" type="video">, <Stream: itag="160" mime_type="video/mp4" res="144p" fps="30fps" vcodec="avc1.4d400c" progressive="False" type="video">, <Stream: itag="278" mime_type="video/webm" res="144p" fps="30fps" vcodec="vp9" progressive="False" type="video">, <Stream: itag="394" mime_type="video/mp4" res="144p" fps="30fps" vcodec="av01.0.00M.08" progressive="False" type="video">, <Stream: itag="139" mime_type="audio/mp4" abr="48kbps" acodec="mp4a.40.5" progressive="False" type="audio">, <Stream: itag="140" mime_type="audio/mp4" abr="128kbps" acodec="mp4a.40.2" progressive="False" type="audio">, <Stream: itag="249" mime_type="audio/webm" abr="50kbps" acodec="opus" progressive="False" type="audio">, <Stream: itag="250" mime_type="audio/webm" abr="70kbps" acodec="opus" progressive="False" type="audio">, <Stream: itag="251" mime_type="audio/webm" abr="160kbps" acodec="opus" progressive="False" type="audio">]'
-
+if len(x) > 0: 
+  
+  adaptive_True_Type_video()
+else:
+  exit()  

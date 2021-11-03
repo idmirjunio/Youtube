@@ -11,9 +11,8 @@ import cruzador
 dir_path = "D:/vscode/python/"
 fileDir= "D:/vscode/python"
 
-def enviar_para_cruzamento(link,tipo):
- try:
-  formato = ".mp4"    
+def enviar_para_cruzamento(link,tipo,formato):
+ 
   if tipo == "video":   
    yt = YouTube(link).title
    file = yt+"(video)"
@@ -40,45 +39,39 @@ def enviar_para_cruzamento(link,tipo):
     os.rename(dir_path+yt+formato,dest+file+formato)
 
   if tipo == "audio" and mac == False: 
-    cruzador.unir_video_audio(nome=yt,formatovid= formato,formatoaud=formato)
- except:
-  formato = ".webm"    
-  if tipo == "video":   
-   yt = YouTube(link).title
-   file = yt+"(video)"
-  
-  else:
-      if tipo == "audio": 
-         yt = YouTube(link).title
-         file = yt+"(audio)"
- 
-  for a in os.listdir(fileDir):
-      if a.endswith(formato):
-       os.rename(a,yt+formato)
-  #dir_path = os.path.dirname(os.path.realpath(__file__))
+    try: 
+     cruzador.unir_video_audio(nome=yt,formatovid= ".mp4",formatoaud=".mp4")
+    except:
+     try:   
+      cruzador.unir_video_audio(nome=yt,formatovid= ".webm",formatoaud=".mp4") 
+     except:
+      try:   
+       cruzador.unir_video_audio(nome=yt,formatovid= ".webm",formatoaud=".webm") 
+      except:
+       try:   
+        cruzador.unir_video_audio(nome=yt,formatovid= ".mp4",formatoaud=".mp4") 
+       except:
+           print("chegou no fim e n executou!")   
 
 
-  dest = "D:/vscode/python/arquivos_temp/"
-
-  mac = cruzador.analisar_algo(yt)
-  if mac == True:
-      os.remove(dir_path+yt+formato)
-       
-  else:
-   if mac == False:         
-    os.rename(dir_path+yt+formato,dest+file+formato)
-
-  if tipo == "audio" and mac == False: 
-    cruzador.unir_video_audio(nome=yt,formatovid= formato,formatoaud=formato) 
         
 #def saber_formato_video(nome):
     
 
 #enviar_para_cruzamento(link=link,tipo="video")
 
+def analisar_biblioteca():
+ dir= "D:/biblioteca"
+ diretorio= "D:\vscode\python\arquivos_temp\diretorio.json"
+ for a in os.listdir(dir):
+      if a.endswith(".mp4"):
+       os.rename(a,yt+formato)
+ os.rename(dir_path+yt+formato,dest+yt+formato)   
+   
+
 
 def enviar_para_biblioteca(link): 
- 
+ analisar_biblioteca()
  formato= ".mp4"
 
  yt = YouTube(link).title
@@ -94,6 +87,7 @@ def enviar_para_biblioteca(link):
 
 
 def enviar_para_local(nome):
+ #analisar_biblioteca()  
  dir_path = "D:/vscode/python/arquivos_temp/"     
  formato= ".mp4"
 
