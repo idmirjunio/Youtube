@@ -63,4 +63,4 @@ def saber_res(resolucao,formato,ada,progress,tipo, ):
 
 #x = x.replace(",","")
 #list[a] 
-print(type(res_max))
+

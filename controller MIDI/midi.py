@@ -1,7 +1,7 @@
 """
  Python MIDI Graphic Running Program
  By Wilson Chao, May 2021.
- October 2021 remark 
+ October 2021 remark        
  For rtmidi package, you need to install python-rtmidi  
 """
 import pygame

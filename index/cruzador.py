@@ -37,9 +37,9 @@ def unir_video_audio(nome,formatoaud,formatovid):
  import os
  import atributos   
  formato = ".mp4"
- aud=nome+"(audio)"+formatoaud
- vid=nome+"(video)"+formatovid
- out=nome+formato
+ aud="(audio)"+formatoaud
+ vid="(video)"+formatovid
+ out="COBAIA"+formato
  outname = "arquivos_temp/"+out
  audname = "arquivos_temp/"+aud
  vidname = "arquivos_temp/"+vid
@@ -47,10 +47,10 @@ def unir_video_audio(nome,formatoaud,formatovid):
  audio_background = mpe.AudioFileClip(audname)
  final_clip = my_clip.set_audio(audio_background)
  final_clip.write_videofile(outname)
- adicionar_biblioteca_json(nome=nome)
+ #adicionar_biblioteca_json(nome=nome)
  os.remove(audname)
  os.remove(vidname)
- atributos.enviar_para_local(nome=nome)
+ #atributos.enviar_para_local(nome=nome)
 
 
 

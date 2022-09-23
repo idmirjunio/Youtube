@@ -1,26 +1,45 @@
-import pytube
 import atributos
 
 
-from pytube import YouTube, streams
+from pytube import YouTube, streams, Channel, Playlist
 from pytube.cli  import on_progress
 import win32clipboard
 
 win32clipboard.OpenClipboard()                 #copiar link do bloco de nota
 link = win32clipboard.GetClipboardData()
-#print(link)
+
 win32clipboard.CloseClipboard()
+link= "https://www.youtube.com/watch?v=QDLVSyBQHDU"
+yt=YouTube(link)
+
+'''
+try:
+  yt=YouTube(link).streams
+  #yt = YouTube(link).streams.fmt_streams
+  #stream=atributos.transformar(url=yt)
+  #print(stream)
+except:
+  try:
+   yt = Playlist(link)
+   for link in yt.video_urls:
+    yt = YouTube(link).streams
+    progressive_true_Res_maior_q_720()     
+    #yt = YouTube(url).streams.fmt_streams
+    #stream=atributos.transformar(url=yt)
+    #print(stream)
+  except:
+   try:
+    yt = Channel(link)
+    for url in yt.video_urls:
+     yt = YouTube(url).streams.fmt_streams
+     stream=atributos.transformar(url=yt)
+     #print(stream)
+   except: 
+    exit()
+
+  ''' 
 
 
-tipo1 = link.find("youtu.be")
-tipo2 = link.find("youtube")
-
-if tipo1 == -1 or tipo2 == -1:
-       
- exit()     
-#link = ("https://youtu.be/Gyroith0-Rc?list=RDGyroith0-Rc")
-#link = ("https://youtu.be/jfLHgN_1dLU")
-yt = YouTube(link,on_progress_callback = on_progress)
 
 
 
@@ -192,7 +211,7 @@ def verificar_codec(resolucao,formato,adaptive,progressive,tipo):
  return str(valor_itag)
 
 
-def saber_res(resolucao,formato,adaptive,progressive,tipo,maior_720 ):
+def saber_res(resolucao=None,formato=None,adaptive=None,progressive=None,tipo=None,maior_720=False ):
  yt = YouTube(link, on_progress_callback = on_progress)
  
  yt = str(yt.streams.filter(res=resolucao, file_extension=formato,adaptive=adaptive,progressive=progressive,type=tipo))
@@ -249,8 +268,9 @@ def saber_res(resolucao,formato,adaptive,progressive,tipo,maior_720 ):
 
 
 
-def pegar_itag(resolucao,formato,adaptive,progressive,tipo,abr):
+def pegar_itag(resolucao=None,formato=None,adaptive=None,progressive=None,tipo=None,abr=None):
  yt = YouTube(link, on_progress_callback = on_progress)
+
  
  yt = str(yt.streams.filter(res=resolucao, file_extension=formato,adaptive=adaptive,progressive=progressive,type=tipo,abr=abr))
 
@@ -333,15 +353,15 @@ def audio_adaptive_Formato_mp4(kbps):
  # se len(x) > 2 verificar codec
 
 #funcao
-def audio_adaptive():      #\MODIFICADO1111111111111111111111111
+def audio_adaptive():      
  kbps = melhor_kbps(resolucao=0,formato="",adaptive=False,progressive=False,tipo="audio")   
  x=yt.streams.filter(type="audio",adaptive=True,abr=kbps)#melhor audio
  # se len(x) == 0 entao ERROR (valor de #melhor audio inesperado ou inexistente Res: Verificar Stream e codigo-fonte)
  if len(x) == 1 :
    itag = pegar_itag(adaptive= False,tipo="audio",resolucao= 0,formato="",abr=kbps,progressive=False)
-   x = yt.streams.get_by_itag(itag)                              #\modificado!!!!!!!!!!!!!!!!
+   x = yt.streams.get_by_itag(itag)                              
    x.download()
-   atributos.enviar_para_cruzamento(link=link,tipo="audio",formato=".mp4")
+   atributos.enviar_para_cruzamento(link=link,tipo="audio")
  else:      
   if len(x) > 2 : audio_adaptive_Formato_mp4(kbps=kbps)#melhor audio 
                                         
@@ -391,15 +411,15 @@ def adaptive_True_Type_video_file_mp4_res_max(p):
     codec = verificar_codec(progressive=False,formato="mp4",adaptive=True,resolucao=p,tipo="video")
     x = yt.streams.get_by_itag(codec)
     x.download()
-    atributos.enviar_para_cruzamento(link=link,tipo="video",formato=".mp4")
+    atributos.enviar_para_cruzamento(link=link,tipo="video")
     adaptive_true_Type_audio()
 
 #funcao
 def adaptive_True_Type_video_Res_max():
- p = saber_res(adaptive=True,tipo="video",resolucao="",formato="",progressive="",maior_720=False)
- x=yt.streams.filter(type="video",adaptive=True,res=p)#+maior resolução
+ p = saber_res(adaptive=True,tipo="video")
+ x=yt.streams.filter(type="video",adaptive=True,res=p)
  if len(x) == 1 :     
-  itag = pegar_itag(adaptive= True,tipo="video",resolucao=p,abr="")
+  itag = pegar_itag(adaptive= True,tipo="video",resolucao=p)
   x = yt.streams.get_by_itag(itag)
   x.download()
   atributos.enviar_para_cruzamento(link=link,tipo="video")
@@ -417,11 +437,14 @@ def adaptive_True_Type_video():
  #senao entao(registrar)
  #  
 
+
 #funçao 
 def progressive_True_file_webm_maior_q_720(p):
     
  x=yt.streams.filter(progressive=True,file_extension='webm',res=p)#resolucao<720p
  if len(x) == 1 : 
+   itag = pegar_itag(adaptive= True,tipo="video",resolucao=p)
+   x = yt.streams.get_by_itag(itag)
    x.download()
    atributos.enviar_para_biblioteca(link=link)
  # se len(x) > 2 entao funçao verificar codec
@@ -429,38 +452,65 @@ def progressive_True_file_webm_maior_q_720(p):
  
 
 #funçao 
-def progressive_True_file_mp4_Res_maior_q_720(p):
-    
+def progressive_True_file_mp4_Res_maior_q_720(p):  
  x=yt.streams.filter(progressive=True,file_extension='mp4',res=p)#resolucao<720p
  if len(x) == 1 :
-       x.download()#avisar
-       atributos.enviar_para_cruzamento(link=link,tipo="video", formato=".mp4")
- # se len(x) > 2 entao funçao verificar valor vcodec
- else:
-  if len(x) == 0 : progressive_True_file_webm_maior_q_720(p=p) #funçao (progressive=True,file_extension='webm',res="1080p")
-
+    itag = pegar_itag(progressive=True,tipo="video",resolucao=p,formato="mp4")
+    x = yt.streams.get_by_itag(itag)
+    x.download()
+    atributos.enviar_para_biblioteca(link=link)
+ elif len(x) == 0 : progressive_True_file_webm_maior_q_720(p=p) #funçao (progressive=True,file_extension='webm',res="1080p")
+     # se len(x) > 2 entao funçao verificar valor vcodec
 
 #funcao 
-def progressive_true_Res_maior_q_720():
- p = saber_res(progressive = True,maior_720 = True,resolucao="",formato="",adaptive="",tipo="")
+def progressive_true_Res_maior_q_720():     
+ p = saber_res(progressive = True,maior_720 = True)
  x=yt.streams.filter(progressive=True,res=p)#resolucao<720p 
- if len(x) == 1 : pass #(listar feito com mensagem) 
- else:
-  if len(x) == 0 : 
-   adaptive_True_Type_video()   
+ if len(x) == 1 :  #(listar feito com mensagem) 
+    itag = pegar_itag(progressive=True,tipo="video",resolucao=p)
+    x = yt.streams.get_by_itag(itag)
+    x.download()
+    atributos.enviar_para_cruzamento(link=link,tipo="video")
+ elif len(x) == 0 :adaptive_True_Type_video()   
+ elif len(x) >= 2 :progressive_True_file_mp4_Res_maior_q_720(p=p)#(progressive=True,file_extension='mp4')#resolucao<720p 
+
+
+# Vai analisar se tem Algum video com audio e video integrado(progressive=True), se não tiver vai verificar se tem algum video separado do audio(adaptive=True) 
+def inicio():
+ 
+ x = yt.streams.filter(progressive=True)     #pegando as faixas de Stream, apenas com progressive(audio e video integrado) 
+ if len(x) > 0: 
+   
+   progressive_true_Res_maior_q_720()
+ else:  
+  x = yt.streams.filter(adaptive=True)         #pegando as faixas de Stream, apenas com progressive(audio e video )
+  if len(x) > 0:
+   print("ok") 
+   adaptive_True_Type_video()
   else:
-   if len(x) > 2 :progressive_True_file_mp4_Res_maior_q_720(p=p)#(progressive=True,file_extension='mp4')#resolucao<720p 
+   exit()
 
-x = yt.streams.filter(progressive=True)
 
-if len(x) > 0: 
-  
-  progressive_true_Res_maior_q_720()
-  
-x = yt.streams.filter(adaptive=True)
-
-if len(x) > 0: 
-  
-  adaptive_True_Type_video()
-else:
-  exit()  
+yt=YouTube(link)
+inicio()
+  #yt = YouTube(link).streams.fmt_streams
+  #stream=atributos.transformar(url=yt)
+  #print(stream)
+#except:
+try:
+   yt = Playlist(link)
+   for link in yt.video_urls:
+    yt = YouTube(link).streams
+    progressive_true_Res_maior_q_720(yt)     
+    #yt = YouTube(url).streams.fmt_streams
+    #stream=atributos.transformar(url=yt)
+    #print(stream)
+except:
+   try:
+    yt = Channel(link)
+    for url in yt.video_urls:
+     yt = YouTube(url).streams.fmt_streams
+     stream=atributos.transformar(url=yt)
+     #print(stream)
+   except: 
+    exit()   

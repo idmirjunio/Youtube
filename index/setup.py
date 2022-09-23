@@ -1,19 +1,42 @@
-import sys
-from cx_Freeze import setup, Executable
+import pytube
+import atributos,ler_array
 
-# Dependencies are automatically detected, but it might need fine tuning.
-build_exe_options = {"packages": ["os"], "includes": ["tkinter"]}
 
-# GUI applications require a different base on Windows (the default is for
-# a console application).
-#base = None
-#if sys.platform == "win32":
-#    base = "Win32GUI"
+from pytube import YouTube, streams, Channel, Playlist
+from pytube.cli  import on_progress
+import win32clipboard
 
-setup(
-    name="Meu App",
-    version="0.1",
-    description="Minha 1° Aplicação!",
-    options={"build_exe": build_exe_options},
-    executables=[Executable("ler_array.py", base=base)]
-)
+win32clipboard.OpenClipboard()                 #copiar link do bloco de nota
+link = win32clipboard.GetClipboardData()
+#print(link)
+win32clipboard.CloseClipboard()
+link= "https://www.youtube.com/watch?v=QDLVSyBQHDU"
+#YouTube(link).streams.get_highest_resolution()
+
+#try:
+ # yt=YouTube(link).streams.filter(adaptive=True).order_by("resolution").last()
+yt=YouTube(link)
+
+
+  #print(yt)
+  #yt = YouTube(link).streams.fmt_streams
+  #stream=atributos.transformar(url=yt)
+  #print(stream)
+#except:
+try:
+   yt = Playlist(link)
+   for link in yt.video_urls:
+    yt = YouTube(link).streams
+    ler_array.inicio(yt=yt)     
+    #yt = YouTube(url).streams.fmt_streams
+    #stream=atributos.transformar(url=yt)
+    #print(stream)
+except:
+   try:
+    yt = Channel(link)
+    for url in yt.video_urls:
+     yt = YouTube(url).streams.fmt_streams
+     stream=atributos.transformar(url=yt)
+     #print(stream)
+   except: 
+    exit()
